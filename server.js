@@ -13,9 +13,12 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 // ── Helper: log con timestamp ISO ───────────────────────────────────────────
+// process.stderr es unbuffered en contenedores (Render, Docker, etc.)
 function cloudLog(model, extra = '') {
-  const ts = new Date().toISOString();
-  console.log(`[${ts}] [CLOUD LOG] Petición recibida: el usuario interactuó con el modelo ${model}.${extra ? ' ' + extra : ''}`);
+  const ts  = new Date().toISOString();
+  const msg = `[${ts}] [CLOUD LOG] Petición recibida: el usuario interactuó con el modelo ${model}.${extra ? ' ' + extra : ''}\n`;
+  process.stdout.write(msg);
+  process.stderr.write(msg);
 }
 
 // ── Rutas de la API ─────────────────────────────────────────────────────────
