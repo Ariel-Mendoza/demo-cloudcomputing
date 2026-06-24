@@ -1,0 +1,22 @@
+{
+  "name": "demo-cloudcomputing",
+  "version": "1.0.0",
+  "description": "Aplicación interactiva de Plataformas en la Nube con backend Express",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "cloud",
+    "iaas",
+    "paas",
+    "saas",
+    "express"
+  ],
+  "author": "Ariel",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

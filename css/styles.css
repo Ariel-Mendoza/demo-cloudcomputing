@@ -1,0 +1,207 @@
+/* ─────────────────────────────────────────────────────────────
+   Variables globales
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --cyber-blue:   #00d4ff;
+  --cyber-purple: #7c3aed;
+  --cyber-green:  #00ff88;
+  --cyber-dark:   #0a0e1a;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Base
+   ───────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--cyber-dark);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Cuadrícula de fondo estilo "matrix grid" */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Efectos de animación
+   ───────────────────────────────────────────────────────────── */
+
+/* Scanline que recorre la pantalla */
+.scanline-overlay::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(transparent, rgba(0, 212, 255, 0.15), transparent);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeInLog {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes float {
+  0%   { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(-20px) translateX(var(--dx)) scale(1); opacity: 0; }
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Componentes reutilizables
+   ───────────────────────────────────────────────────────────── */
+
+/* Texto con gradiente */
+.gradient-text {
+  background: linear-gradient(135deg, var(--cyber-blue) 0%, var(--cyber-purple) 50%, var(--cyber-green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Brillo en bordes de tarjetas */
+.glow-border {
+  box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.3),
+              0 0 20px rgba(0, 212, 255, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+.glow-border:hover {
+  box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.7),
+              0 0 30px rgba(0, 212, 255, 0.2);
+}
+
+/* Indicador de estado con ping */
+.status-dot {
+  position: relative;
+}
+.status-dot::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.3;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Botones de modelo de servicio (IaaS / PaaS / SaaS)
+   ───────────────────────────────────────────────────────────── */
+.model-btn {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de brillo al pasar el cursor */
+.model-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+.model-btn:hover::before { transform: translateX(100%); }
+
+/* Estado activo de cada modelo */
+.model-btn.active-iaas {
+  background: linear-gradient(135deg, #1e3a5f, #0a2540);
+  border-color: var(--cyber-blue);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+.model-btn.active-paas {
+  background: linear-gradient(135deg, #2d1b69, #1a0f3c);
+  border-color: #a78bfa;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+}
+.model-btn.active-saas {
+  background: linear-gradient(135deg, #0a2e1a, #051a0f);
+  border-color: var(--cyber-green);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Pila de responsabilidades cloud
+   ───────────────────────────────────────────────────────────── */
+.stack-cell {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0.95);
+  opacity: 0;
+}
+.stack-cell.visible {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Barra de progreso del deploy
+   ───────────────────────────────────────────────────────────── */
+.progress-fill {
+  transition: width 0.4s ease;
+  background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-purple), var(--cyber-green));
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Terminal / consola de logs
+   ───────────────────────────────────────────────────────────── */
+#log-console {
+  background: #050810;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.log-entry {
+  animation: fadeInLog 0.3s ease;
+}
+
+/* Cursor parpadeante */
+.cursor::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
+  color: var(--cyber-green);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Partículas flotantes (hero section)
+   ───────────────────────────────────────────────────────────── */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float linear infinite;
+}

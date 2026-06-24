@@ -8,219 +8,15 @@
   <!-- Tailwind CSS vía CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts: Orbitron (futurista) + Inter (legible) -->
+  <!-- Configuración del tema (debe estar antes del CSS de Tailwind) -->
+  <script src="js/tailwind.config.js"></script>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <script>
-    // Extensión de paleta de colores personalizada para Tailwind
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            orbitron: ['Orbitron', 'sans-serif'],
-            inter:    ['Inter',    'sans-serif'],
-            mono:     ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            'cyber-blue':   '#00d4ff',
-            'cyber-purple': '#7c3aed',
-            'cyber-green':  '#00ff88',
-            'cyber-dark':   '#0a0e1a',
-            'cyber-card':   '#111827',
-            'cyber-border': '#1e2d40',
-          },
-          animation: {
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'glow':       'glow 2s ease-in-out infinite alternate',
-            'scanline':   'scanline 8s linear infinite',
-            'blink':      'blink 1s step-end infinite',
-          },
-          keyframes: {
-            glow: {
-              from: { textShadow: '0 0 10px #00d4ff, 0 0 20px #00d4ff' },
-              to:   { textShadow: '0 0 20px #00d4ff, 0 0 40px #00d4ff, 0 0 60px #00d4ff' },
-            },
-            scanline: {
-              '0%':   { transform: 'translateY(-100%)' },
-              '100%': { transform: 'translateY(100vh)' },
-            },
-            blink: {
-              '0%, 100%': { opacity: '1' },
-              '50%':      { opacity: '0' },
-            },
-          },
-        },
-      },
-    };
-  </script>
-
-  <style>
-    /* ─── Variables y estilos globales ─── */
-    :root {
-      --cyber-blue:   #00d4ff;
-      --cyber-purple: #7c3aed;
-      --cyber-green:  #00ff88;
-      --cyber-dark:   #0a0e1a;
-    }
-
-    body {
-      background-color: var(--cyber-dark);
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-    }
-
-    /* Cuadrícula de fondo estilo "matrix grid" */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Efecto de scanline animada */
-    .scanline-overlay::after {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(transparent, rgba(0, 212, 255, 0.15), transparent);
-      animation: scanline 8s linear infinite;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Brillo en bordes de tarjetas */
-    .glow-border {
-      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.3),
-                  0 0 20px rgba(0, 212, 255, 0.05);
-      transition: box-shadow 0.3s ease;
-    }
-    .glow-border:hover {
-      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.7),
-                  0 0 30px rgba(0, 212, 255, 0.2);
-    }
-
-    /* Botones de modelo de servicio */
-    .model-btn {
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .model-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
-      transform: translateX(-100%);
-      transition: transform 0.5s ease;
-    }
-    .model-btn:hover::before { transform: translateX(100%); }
-    .model-btn.active-iaas {
-      background: linear-gradient(135deg, #1e3a5f, #0a2540);
-      border-color: var(--cyber-blue);
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-    }
-    .model-btn.active-paas {
-      background: linear-gradient(135deg, #2d1b69, #1a0f3c);
-      border-color: #a78bfa;
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
-    }
-    .model-btn.active-saas {
-      background: linear-gradient(135deg, #0a2e1a, #051a0f);
-      border-color: var(--cyber-green);
-      box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-    }
-
-    /* Celdas de la pila de responsabilidades */
-    .stack-cell {
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform: scale(0.95);
-      opacity: 0;
-    }
-    .stack-cell.visible {
-      transform: scale(1);
-      opacity: 1;
-    }
-
-    /* Barra de progreso del deploy */
-    .progress-fill {
-      transition: width 0.4s ease;
-      background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-purple), var(--cyber-green));
-      background-size: 200% 100%;
-      animation: shimmer 2s linear infinite;
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* Terminal / consola de logs */
-    #log-console {
-      background: #050810;
-      border: 1px solid rgba(0, 212, 255, 0.2);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      line-height: 1.6;
-    }
-
-    .log-entry { animation: fadeInLog 0.3s ease; }
-    @keyframes fadeInLog {
-      from { opacity: 0; transform: translateX(-10px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* Cursor parpadeante en terminal */
-    .cursor::after {
-      content: '█';
-      animation: blink 1s step-end infinite;
-      color: var(--cyber-green);
-    }
-
-    /* Gradiente de texto */
-    .gradient-text {
-      background: linear-gradient(135deg, var(--cyber-blue) 0%, var(--cyber-purple) 50%, var(--cyber-green) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Partículas flotantes en el hero */
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      animation: float linear infinite;
-    }
-    @keyframes float {
-      0%   { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
-      10%  { opacity: 0.6; }
-      90%  { opacity: 0.3; }
-      100% { transform: translateY(-20px) translateX(var(--dx)) scale(1); opacity: 0; }
-    }
-
-    /* Ping de estado activo */
-    .status-dot {
-      position: relative;
-    }
-    .status-dot::before {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: 0.3;
-      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-    @keyframes ping {
-      75%, 100% { transform: scale(2); opacity: 0; }
-    }
-  </style>
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body class="scanline-overlay text-gray-100 min-h-screen relative z-10">
@@ -231,13 +27,11 @@
   <header class="relative z-20 border-b border-cyber-border bg-cyber-dark/80 backdrop-blur-md sticky top-0">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-      <!-- Logo + título -->
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyber-blue to-cyber-purple flex items-center justify-center text-sm font-bold text-white">☁</div>
         <span class="font-orbitron text-sm font-bold tracking-widest gradient-text uppercase">Cloud Dashboard</span>
       </div>
 
-      <!-- Estado del sistema -->
       <div class="flex items-center gap-6 text-xs font-mono">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-cyber-green status-dot text-cyber-green inline-block"></span>
@@ -259,18 +53,17 @@
         </div>
         <span class="text-gray-600" id="clock">--:--:--</span>
       </div>
+
     </div>
   </header>
 
 
   <!-- ════════════════════════════════════════════════════════════
-       HERO SECTION
+       HERO
        ════════════════════════════════════════════════════════════ -->
   <section class="relative z-10 py-20 px-6 text-center overflow-hidden" id="particles-container">
-
-    <!-- Partículas flotantes (se generan por JS) -->
-
     <div class="relative z-10 max-w-4xl mx-auto">
+
       <p class="font-mono text-cyber-blue text-xs tracking-[0.3em] mb-4 uppercase">Herramientas de Desarrollo — 2026</p>
 
       <h1 class="font-orbitron text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-tight">
@@ -282,7 +75,6 @@
         Explora los modelos de servicio cloud de forma interactiva: entiende qué controla el usuario y qué gestiona el proveedor.
       </p>
 
-      <!-- Métricas rápidas -->
       <div class="mt-12 grid grid-cols-3 gap-4 max-w-lg mx-auto">
         <div class="glow-border bg-cyber-card rounded-xl p-4">
           <p class="font-orbitron text-2xl font-bold text-cyber-blue">3</p>
@@ -297,6 +89,7 @@
           <p class="text-xs text-gray-500 mt-1">Disponibilidad</p>
         </div>
       </div>
+
     </div>
   </section>
 
@@ -307,72 +100,64 @@
   <section class="relative z-10 py-16 px-6" id="simulator">
     <div class="max-w-7xl mx-auto">
 
-      <!-- Encabezado de sección -->
       <div class="mb-10 text-center">
         <p class="font-mono text-xs text-cyber-blue tracking-widest uppercase mb-2">// Sección 01</p>
         <h2 class="font-orbitron text-3xl font-bold text-white mb-3">Simulador de Arquitectura Cloud</h2>
         <p class="text-gray-500 text-sm">Selecciona un modelo de servicio para visualizar la distribución de responsabilidades</p>
       </div>
 
-      <!-- Botones de selección de modelo -->
+      <!-- Botones de modelo -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-        <button onclick="selectModel('iaas')" id="btn-iaas"
+        <button id="btn-iaas"
           class="model-btn px-8 py-4 rounded-xl border border-cyber-border bg-cyber-card text-white font-orbitron text-sm tracking-widest uppercase transition-all hover:scale-105">
           <span class="text-cyber-blue mr-2">⚙</span> IaaS
           <span class="block text-xs text-gray-500 font-inter normal-case tracking-normal mt-1">Infrastructure as a Service</span>
         </button>
-        <button onclick="selectModel('paas')" id="btn-paas"
+        <button id="btn-paas"
           class="model-btn px-8 py-4 rounded-xl border border-cyber-border bg-cyber-card text-white font-orbitron text-sm tracking-widest uppercase transition-all hover:scale-105">
           <span class="text-cyber-purple mr-2">🔧</span> PaaS
           <span class="block text-xs text-gray-500 font-inter normal-case tracking-normal mt-1">Platform as a Service</span>
         </button>
-        <button onclick="selectModel('saas')" id="btn-saas"
+        <button id="btn-saas"
           class="model-btn px-8 py-4 rounded-xl border border-cyber-border bg-cyber-card text-white font-orbitron text-sm tracking-widest uppercase transition-all hover:scale-105">
           <span class="text-cyber-green mr-2">☁</span> SaaS
           <span class="block text-xs text-gray-500 font-inter normal-case tracking-normal mt-1">Software as a Service</span>
         </button>
       </div>
 
-      <!-- Área de diagrama dinámico -->
+      <!-- Diagrama dinámico -->
       <div id="diagram-area" class="transition-all duration-500">
-        <!-- Mensaje inicial (sin selección) -->
+
         <div id="diagram-placeholder" class="text-center py-20 text-gray-600">
           <div class="text-5xl mb-4">☁</div>
           <p class="font-mono text-sm">Selecciona un modelo para visualizar el diagrama →</p>
         </div>
 
-        <!-- Contenido del diagrama (oculto hasta selección) -->
         <div id="diagram-content" class="hidden">
 
-          <!-- Título del modelo seleccionado -->
           <div class="text-center mb-8">
             <h3 id="model-title" class="font-orbitron text-2xl font-bold"></h3>
             <p id="model-description" class="text-gray-400 text-sm mt-2 max-w-xl mx-auto"></p>
           </div>
 
-          <!-- Diagrama de pila: Layout en 3 columnas (Leyenda + Pila + Tarjetas) -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-            <!-- COLUMNA IZQUIERDA: Leyenda y ejemplos -->
+            <!-- Columna izquierda: ejemplos y casos de uso -->
             <div id="info-card" class="glow-border bg-cyber-card rounded-2xl p-6 space-y-4">
               <h4 class="font-orbitron text-xs tracking-widest text-gray-400 uppercase">Ejemplos reales</h4>
               <div id="examples-list" class="space-y-3"></div>
-
               <hr class="border-cyber-border" />
-
               <h4 class="font-orbitron text-xs tracking-widest text-gray-400 uppercase mt-4">Casos de uso</h4>
               <p id="use-cases" class="text-gray-400 text-sm leading-relaxed"></p>
             </div>
 
-            <!-- COLUMNA CENTRAL: Pila visual -->
+            <!-- Columna central: pila tecnológica -->
             <div class="space-y-2" id="stack-visual">
               <p class="text-center font-mono text-xs text-gray-600 mb-4 tracking-widest uppercase">← Pila Tecnológica →</p>
-              <!-- Las celdas se generan dinámicamente por JS -->
             </div>
 
-            <!-- COLUMNA DERECHA: Comparativa de control -->
+            <!-- Columna derecha: quién controla qué -->
             <div class="space-y-4">
-              <!-- Bloque: Usuario controla -->
               <div id="user-controls-card" class="glow-border bg-cyber-card rounded-2xl p-6">
                 <div class="flex items-center gap-2 mb-4">
                   <div class="w-3 h-3 rounded-full bg-cyber-green"></div>
@@ -381,7 +166,6 @@
                 <ul id="user-controls" class="space-y-2 text-sm text-gray-300"></ul>
               </div>
 
-              <!-- Bloque: Proveedor controla -->
               <div id="provider-controls-card" class="glow-border bg-cyber-card rounded-2xl p-6">
                 <div class="flex items-center gap-2 mb-4">
                   <div class="w-3 h-3 rounded-full bg-cyber-blue"></div>
@@ -390,22 +174,22 @@
                 <ul id="provider-controls" class="space-y-2 text-sm text-gray-300"></ul>
               </div>
 
-              <!-- Ventajas / desventajas -->
               <div class="glow-border bg-cyber-card rounded-2xl p-6">
                 <h4 class="font-orbitron text-xs tracking-widest text-gray-400 uppercase mb-4">Balance</h4>
                 <div id="pros-cons" class="space-y-2 text-sm"></div>
               </div>
             </div>
-          </div>
 
-        </div><!-- /diagram-content -->
-      </div><!-- /diagram-area -->
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
 
   <!-- ════════════════════════════════════════════════════════════
-       SECCIÓN 2 — DEPLOY A LA NUBE
+       SECCIÓN 2 — SIMULADOR DE DESPLIEGUE
        ════════════════════════════════════════════════════════════ -->
   <section class="relative z-10 py-16 px-6 bg-cyber-card/30 border-y border-cyber-border" id="deploy">
     <div class="max-w-3xl mx-auto text-center">
@@ -414,10 +198,9 @@
       <h2 class="font-orbitron text-3xl font-bold text-white mb-3">Simulador de Despliegue</h2>
       <p class="text-gray-500 text-sm mb-10">Experimenta cómo funciona un pipeline de CI/CD y despliegue cloud en tiempo real</p>
 
-      <!-- Tarjeta del deploy -->
       <div class="glow-border bg-cyber-card rounded-2xl p-8">
 
-        <!-- Configuración del deploy -->
+        <!-- Configuración -->
         <div class="grid grid-cols-3 gap-4 mb-8 text-left">
           <div class="bg-cyber-dark rounded-lg p-3">
             <p class="text-xs text-gray-600 font-mono mb-1">ENTORNO</p>
@@ -444,13 +227,11 @@
           </div>
         </div>
 
-        <!-- Etapas del pipeline (chips) -->
-        <div class="flex flex-wrap gap-2 justify-center mb-8" id="pipeline-stages">
-          <!-- Se generan por JS -->
-        </div>
+        <!-- Chips del pipeline -->
+        <div class="flex flex-wrap gap-2 justify-center mb-8" id="pipeline-stages"></div>
 
         <!-- Botón de deploy -->
-        <button id="deploy-btn" onclick="startDeploy()"
+        <button id="deploy-btn"
           class="px-10 py-4 rounded-xl font-orbitron text-sm tracking-widest uppercase font-bold text-white
                  bg-gradient-to-r from-cyber-purple to-cyber-blue hover:from-cyber-blue hover:to-cyber-purple
                  transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-cyber-blue/30
@@ -458,7 +239,7 @@
           🚀 Iniciar Despliegue
         </button>
 
-        <!-- Mensaje de éxito (oculto inicialmente) -->
+        <!-- Mensaje de éxito -->
         <div id="success-msg" class="hidden mt-6 p-4 rounded-xl border border-cyber-green/30 bg-cyber-green/5">
           <p class="text-cyber-green font-orbitron text-sm font-bold">✓ ¡Aplicación Desplegada Exitosamente en la Nube!</p>
           <p class="text-gray-400 text-xs mt-1 font-mono">URL: https://mi-app-<span id="deploy-hash"></span>.cloudapp.io</p>
@@ -479,10 +260,9 @@
       <h2 class="font-orbitron text-3xl font-bold text-white mb-3">Consola del Servidor</h2>
       <p class="text-gray-500 text-sm mb-8">Monitor en tiempo real de eventos del sistema cloud</p>
 
-      <!-- Terminal -->
       <div id="log-console" class="rounded-2xl overflow-hidden">
 
-        <!-- Barra superior de la terminal -->
+        <!-- Barra superior de terminal -->
         <div class="bg-gray-900 border-b border-cyber-border px-4 py-3 flex items-center justify-between">
           <div class="flex gap-2">
             <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -491,12 +271,12 @@
           </div>
           <span class="text-xs text-gray-500 font-mono">cloud-instance-01 — bash</span>
           <div class="flex gap-3">
-            <button onclick="clearLogs()" class="text-xs text-gray-600 hover:text-cyber-blue font-mono transition-colors">LIMPIAR</button>
-            <button onclick="pauseLogs()" id="pause-btn" class="text-xs text-gray-600 hover:text-cyber-green font-mono transition-colors">PAUSAR</button>
+            <button id="clear-logs-btn" class="text-xs text-gray-600 hover:text-cyber-blue font-mono transition-colors">LIMPIAR</button>
+            <button id="pause-btn"      class="text-xs text-gray-600 hover:text-cyber-green font-mono transition-colors">PAUSAR</button>
           </div>
         </div>
 
-        <!-- Área de scroll de logs -->
+        <!-- Área de logs -->
         <div id="log-output" class="p-4 h-72 overflow-y-auto space-y-1"></div>
 
         <!-- Línea de comando activa -->
@@ -507,13 +287,13 @@
 
       </div>
 
-      <!-- Filtros de log -->
+      <!-- Filtros -->
       <div class="flex flex-wrap gap-2 mt-4">
-        <button onclick="filterLogs('all')"  class="log-filter active-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-cyber-blue transition-all" data-filter="all">TODOS</button>
-        <button onclick="filterLogs('info')" class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-cyber-blue transition-all" data-filter="info">INFO</button>
-        <button onclick="filterLogs('warn')" class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-yellow-400 transition-all" data-filter="warn">WARN</button>
-        <button onclick="filterLogs('error')" class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-red-400 transition-all" data-filter="error">ERROR</button>
-        <button onclick="filterLogs('success')" class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-cyber-green transition-all" data-filter="success">SUCCESS</button>
+        <button class="log-filter active-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-cyber-blue transition-all"   data-filter="all">TODOS</button>
+        <button class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-cyber-blue transition-all"                 data-filter="info">INFO</button>
+        <button class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-yellow-400 transition-all"                data-filter="warn">WARN</button>
+        <button class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-red-400 transition-all"                   data-filter="error">ERROR</button>
+        <button class="log-filter px-3 py-1 rounded-lg text-xs font-mono border border-cyber-border text-gray-400 hover:text-white hover:border-cyber-green transition-all"               data-filter="success">SUCCESS</button>
       </div>
 
     </div>
@@ -531,652 +311,8 @@
     </p>
   </footer>
 
+  <!-- Lógica de la aplicación -->
+  <script src="js/app.js"></script>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JAVASCRIPT — LÓGICA DE LA APLICACIÓN
-       ════════════════════════════════════════════════════════════ -->
-  <script>
-
-    /* ───────────────────────────────────────────────
-       DATOS DE CADA MODELO DE SERVICIO CLOUD
-       ─────────────────────────────────────────────── */
-    const CLOUD_MODELS = {
-
-      iaas: {
-        label:       'IaaS — Infrastructure as a Service',
-        color:       '#00d4ff',
-        colorClass:  'text-cyber-blue',
-        borderClass: 'border-cyber-blue',
-        description: 'El proveedor ofrece recursos de cómputo virtualizados (servidores, redes, almacenamiento). Tú administras todo lo demás: SO, middleware y aplicaciones.',
-        examples: [
-          { name: 'Amazon EC2', icon: '🟠', desc: 'Instancias virtuales escalables' },
-          { name: 'Google Compute Engine', icon: '🔵', desc: 'VMs en infraestructura de Google' },
-          { name: 'Microsoft Azure VMs', icon: '🟣', desc: 'Máquinas virtuales Windows/Linux' },
-          { name: 'DigitalOcean Droplets', icon: '💧', desc: 'VMs simples para devs' },
-        ],
-        useCases: 'Ideal para empresas que necesitan control total sobre el SO y el entorno de ejecución, o que migran infraestructura on-premise a la nube (lift-and-shift).',
-        userControls: [
-          '🖥 Sistema Operativo (Windows / Linux)',
-          '🔒 Configuración de red y firewalls',
-          '💽 Bases de datos y middleware',
-          '📦 Runtime y librerías',
-          '🚀 Código y aplicaciones',
-          '🗂 Almacenamiento y backups',
-        ],
-        providerControls: [
-          '⚙ Servidores físicos y hardware',
-          '🌐 Red física y conectividad',
-          '❄ Refrigeración y datacenter',
-          '🔌 Alimentación eléctrica',
-          '🔄 Virtualización (hipervisor)',
-        ],
-        stack: [
-          { label: 'Aplicaciones',   user: true  },
-          { label: 'Datos',          user: true  },
-          { label: 'Runtime',        user: true  },
-          { label: 'Middleware',     user: true  },
-          { label: 'Sistema Op.',    user: true  },
-          { label: 'Virtualización', user: false },
-          { label: 'Servidores',     user: false },
-          { label: 'Almacenamiento', user: false },
-          { label: 'Red',            user: false },
-        ],
-        pros:  ['+ Control total del entorno', '+ Máxima flexibilidad y personalización'],
-        cons:  ['− Mayor responsabilidad de gestión', '− Requiere equipo técnico especializado'],
-      },
-
-      paas: {
-        label:       'PaaS — Platform as a Service',
-        color:       '#a78bfa',
-        colorClass:  'text-purple-400',
-        borderClass: 'border-purple-400',
-        description: 'El proveedor gestiona la infraestructura Y el sistema operativo. Tú solo te enfocas en desarrollar tu aplicación y gestionar tus datos.',
-        examples: [
-          { name: 'Google App Engine', icon: '🔵', desc: 'Deploy automático de apps web' },
-          { name: 'Heroku', icon: '🟣', desc: 'Plataforma para devs sin ops' },
-          { name: 'AWS Elastic Beanstalk', icon: '🟠', desc: 'Deploy fácil en AWS' },
-          { name: 'Azure App Service', icon: '🔷', desc: 'Hosting de apps web en Azure' },
-        ],
-        useCases: 'Perfecta para equipos de desarrollo que quieren hacer deploy rápido sin preocuparse por servidores, actualizaciones de SO o configuración de red.',
-        userControls: [
-          '🚀 Código de la aplicación',
-          '🗂 Datos y esquemas de BD',
-          '⚙ Configuración de la app',
-          '🔐 Credenciales y variables de entorno',
-        ],
-        providerControls: [
-          '🖥 Sistema Operativo',
-          '📦 Runtime y librerías del sistema',
-          '🔒 Seguridad y parches del SO',
-          '⚙ Servidores físicos y hardware',
-          '🌐 Red física y conectividad',
-          '❄ Datacenter e infraestructura',
-          '🔄 Escalado automático',
-        ],
-        stack: [
-          { label: 'Aplicaciones',   user: true  },
-          { label: 'Datos',          user: true  },
-          { label: 'Runtime',        user: false },
-          { label: 'Middleware',     user: false },
-          { label: 'Sistema Op.',    user: false },
-          { label: 'Virtualización', user: false },
-          { label: 'Servidores',     user: false },
-          { label: 'Almacenamiento', user: false },
-          { label: 'Red',            user: false },
-        ],
-        pros:  ['+ Desarrollo más ágil y rápido', '+ Sin gestión de infraestructura'],
-        cons:  ['− Menor control sobre el entorno', '− Posible vendor lock-in'],
-      },
-
-      saas: {
-        label:       'SaaS — Software as a Service',
-        color:       '#00ff88',
-        colorClass:  'text-cyber-green',
-        borderClass: 'border-cyber-green',
-        description: 'El proveedor gestiona absolutamente todo: infraestructura, plataforma y software. El usuario final solo usa la aplicación a través del navegador.',
-        examples: [
-          { name: 'Google Workspace', icon: '🔵', desc: 'Gmail, Docs, Drive en la nube' },
-          { name: 'Microsoft 365',    icon: '🟦', desc: 'Office completo como servicio' },
-          { name: 'Salesforce',       icon: '☁',  desc: 'CRM empresarial en la nube' },
-          { name: 'Slack / Zoom',     icon: '🟣', desc: 'Colaboración y videoconferencia' },
-        ],
-        useCases: 'Para usuarios finales y empresas que necesitan software listo para usar sin ningún mantenimiento técnico. Solo se paga una suscripción.',
-        userControls: [
-          '👤 Gestión de usuarios y permisos',
-          '⚙ Configuración de la aplicación',
-          '📊 Datos que ingresas al sistema',
-        ],
-        providerControls: [
-          '🚀 Aplicación y todas sus funciones',
-          '🗂 Bases de datos y almacenamiento',
-          '📦 Runtime y librerías',
-          '🖥 Sistema Operativo',
-          '⚙ Servidores físicos y hardware',
-          '🌐 Red física y conectividad',
-          '❄ Datacenter e infraestructura',
-          '🔒 Seguridad y actualizaciones',
-        ],
-        stack: [
-          { label: 'Aplicaciones',   user: false },
-          { label: 'Datos',          user: false },
-          { label: 'Runtime',        user: false },
-          { label: 'Middleware',     user: false },
-          { label: 'Sistema Op.',    user: false },
-          { label: 'Virtualización', user: false },
-          { label: 'Servidores',     user: false },
-          { label: 'Almacenamiento', user: false },
-          { label: 'Red',            user: false },
-        ],
-        pros:  ['+ Cero mantenimiento técnico', '+ Acceso inmediato desde cualquier lugar'],
-        cons:  ['− Sin control sobre el software', '− Dependencia total del proveedor'],
-      },
-    };
-
-
-    /* ───────────────────────────────────────────────
-       SIMULADOR DE ARQUITECTURA CLOUD
-       ─────────────────────────────────────────────── */
-
-    let currentModel = null; // modelo seleccionado actualmente
-
-    /**
-     * Renderiza el diagrama cuando el usuario hace clic en un botón de modelo.
-     * @param {string} modelKey - 'iaas' | 'paas' | 'saas'
-     */
-    function selectModel(modelKey) {
-      currentModel = modelKey;
-      const model = CLOUD_MODELS[modelKey];
-
-      // 1. Actualizar estado visual de los botones
-      ['iaas', 'paas', 'saas'].forEach(key => {
-        const btn = document.getElementById(`btn-${key}`);
-        btn.className = btn.className
-          .replace(/active-iaas|active-paas|active-saas/g, '')
-          .trim();
-      });
-      document.getElementById(`btn-${modelKey}`).classList.add(`active-${modelKey}`);
-
-      // 2. Mostrar el área del diagrama y ocultar el placeholder
-      document.getElementById('diagram-placeholder').classList.add('hidden');
-      document.getElementById('diagram-content').classList.remove('hidden');
-
-      // 3. Rellenar título y descripción
-      const titleEl = document.getElementById('model-title');
-      titleEl.textContent = model.label;
-      titleEl.className = `font-orbitron text-2xl font-bold ${model.colorClass}`;
-      document.getElementById('model-description').textContent = model.description;
-
-      // 4. Rellenar ejemplos reales
-      const exList = document.getElementById('examples-list');
-      exList.innerHTML = model.examples.map(ex => `
-        <div class="flex items-start gap-2 p-2 rounded-lg bg-cyber-dark/50">
-          <span class="text-lg">${ex.icon}</span>
-          <div>
-            <p class="text-sm font-medium text-white">${ex.name}</p>
-            <p class="text-xs text-gray-500">${ex.desc}</p>
-          </div>
-        </div>
-      `).join('');
-
-      // 5. Rellenar casos de uso
-      document.getElementById('use-cases').textContent = model.useCases;
-
-      // 6. Renderizar la pila visual (stack)
-      renderStack(model);
-
-      // 7. Rellenar listas de control
-      renderControlList('user-controls',     model.userControls,     '✓');
-      renderControlList('provider-controls', model.providerControls, '✓');
-
-      // 8. Rellenar pros/cons
-      const prosConsEl = document.getElementById('pros-cons');
-      prosConsEl.innerHTML = [
-        ...model.pros.map(p => `<p class="text-cyber-green text-xs font-mono">${p}</p>`),
-        ...model.cons.map(c => `<p class="text-red-400 text-xs font-mono">${c}</p>`),
-      ].join('');
-
-      // 9. Agregar log de la acción
-      addLog('info', `Modelo seleccionado: ${model.label}`);
-    }
-
-    /**
-     * Dibuja las celdas de la pila tecnológica con colores según quién la controla.
-     */
-    function renderStack(model) {
-      const container = document.getElementById('stack-visual');
-      container.innerHTML = `<p class="text-center font-mono text-xs text-gray-600 mb-4 tracking-widest uppercase">← Pila Tecnológica →</p>`;
-
-      model.stack.forEach((layer, index) => {
-        const cell = document.createElement('div');
-        const userColor = model.color;
-
-        cell.className = 'stack-cell rounded-lg px-4 py-3 flex items-center justify-between text-sm font-medium border';
-
-        if (layer.user) {
-          // Capas que controla el USUARIO
-          cell.style.cssText = `
-            background: ${userColor}15;
-            border-color: ${userColor}60;
-            color: ${userColor};
-          `;
-          cell.innerHTML = `
-            <span>${layer.label}</span>
-            <span class="text-xs font-mono opacity-70">TÚ</span>
-          `;
-        } else {
-          // Capas que controla el PROVEEDOR
-          cell.style.cssText = `
-            background: rgba(30,45,64,0.6);
-            border-color: rgba(30,45,64,0.9);
-            color: #6b7280;
-          `;
-          cell.innerHTML = `
-            <span>${layer.label}</span>
-            <span class="text-xs font-mono opacity-50">PROVEEDOR</span>
-          `;
-        }
-
-        container.appendChild(cell);
-
-        // Animación escalonada de entrada
-        setTimeout(() => cell.classList.add('visible'), index * 60);
-      });
-
-      // Leyenda debajo de la pila
-      container.innerHTML += `
-        <div class="mt-4 flex items-center justify-center gap-4 text-xs font-mono">
-          <span class="flex items-center gap-1" style="color: ${model.color}">
-            <span class="w-3 h-3 rounded-sm inline-block" style="background: ${model.color}40; border: 1px solid ${model.color}"></span>
-            Tú gestionas
-          </span>
-          <span class="flex items-center gap-1 text-gray-600">
-            <span class="w-3 h-3 rounded-sm inline-block bg-cyber-border border border-gray-700 inline-block"></span>
-            Proveedor gestiona
-          </span>
-        </div>
-      `;
-    }
-
-    /**
-     * Genera elementos <li> para las listas de responsabilidades.
-     */
-    function renderControlList(elementId, items, checkMark) {
-      const el = document.getElementById(elementId);
-      el.innerHTML = items.map(item => `
-        <li class="flex items-start gap-2 text-gray-300 text-sm">
-          <span class="mt-0.5 flex-shrink-0">${item}</span>
-        </li>
-      `).join('');
-    }
-
-
-    /* ───────────────────────────────────────────────
-       SIMULADOR DE DESPLIEGUE (DEPLOY)
-       ─────────────────────────────────────────────── */
-
-    // Etapas del pipeline de CI/CD
-    const PIPELINE_STAGES = [
-      { id: 'build',    label: 'Build',     icon: '⚙' },
-      { id: 'test',     label: 'Tests',     icon: '✓' },
-      { id: 'package',  label: 'Package',   icon: '📦' },
-      { id: 'push',     label: 'Push Image',icon: '⬆' },
-      { id: 'provision',label: 'Provision', icon: '🔧' },
-      { id: 'deploy',   label: 'Deploy',    icon: '🚀' },
-      { id: 'health',   label: 'Health Chk',icon: '❤' },
-    ];
-
-    // Mensajes que aparecen durante el deploy para cada etapa
-    const DEPLOY_MESSAGES = [
-      { pct: 5,  stage: 'Compilando código fuente...',       log: 'info',    msg: 'Iniciando compilación del proyecto...' },
-      { pct: 15, stage: 'Ejecutando tests unitarios...',      log: 'info',    msg: 'npm run test — 47 tests passed ✓' },
-      { pct: 22, stage: 'Verificando cobertura de código...', log: 'success', msg: 'Code coverage: 92.3% — OK' },
-      { pct: 30, stage: 'Construyendo imagen Docker...',      log: 'info',    msg: 'docker build -t my-app:latest .' },
-      { pct: 42, stage: 'Subiendo imagen al registry...',     log: 'info',    msg: 'Pushing image to registry.cloud.io/my-app:latest' },
-      { pct: 55, stage: 'Provisionando instancias cloud...',  log: 'info',    msg: 'Requesting 3x t3.medium instances in us-east-1' },
-      { pct: 65, stage: 'Configurando balanceador de carga...', log: 'info', msg: 'Setting up Application Load Balancer...' },
-      { pct: 75, stage: 'Desplegando contenedores...',        log: 'info',    msg: 'kubectl apply -f deployment.yaml' },
-      { pct: 85, stage: 'Ejecutando health checks...',        log: 'warn',    msg: 'Waiting for pods to become ready... (1/3)' },
-      { pct: 90, stage: 'Validando endpoints...',             log: 'info',    msg: 'All 3 pods running ✓ — checking endpoints' },
-      { pct: 95, stage: 'Actualizando DNS...',                log: 'info',    msg: 'DNS propagation in progress...' },
-      { pct: 100, stage: '¡Despliegue completado!',           log: 'success', msg: 'Deployment successful — app live at https://my-app-prod.cloudapp.io' },
-    ];
-
-    let deployRunning = false;
-
-    /** Inicializa los chips de etapas del pipeline en el DOM */
-    function initPipelineStages() {
-      const container = document.getElementById('pipeline-stages');
-      PIPELINE_STAGES.forEach(s => {
-        const chip = document.createElement('div');
-        chip.id = `stage-${s.id}`;
-        chip.className = 'px-3 py-1.5 rounded-lg text-xs font-mono border border-cyber-border bg-cyber-dark text-gray-600 transition-all duration-500';
-        chip.innerHTML = `${s.icon} ${s.label}`;
-        container.appendChild(chip);
-      });
-    }
-
-    /**
-     * Arranca la simulación de despliegue.
-     * Anima la barra de progreso y va mostrando mensajes escalonados.
-     */
-    async function startDeploy() {
-      if (deployRunning) return;
-      deployRunning = true;
-
-      const btn = document.getElementById('deploy-btn');
-      const bar = document.getElementById('progress-bar');
-      const pctEl = document.getElementById('deploy-pct');
-      const stageEl = document.getElementById('deploy-stage');
-      const successEl = document.getElementById('success-msg');
-
-      btn.disabled = true;
-      successEl.classList.add('hidden');
-
-      // Resetear chips de pipeline
-      PIPELINE_STAGES.forEach(s => {
-        const chip = document.getElementById(`stage-${s.id}`);
-        chip.className = 'px-3 py-1.5 rounded-lg text-xs font-mono border border-cyber-border bg-cyber-dark text-gray-600 transition-all duration-500';
-      });
-
-      addLog('info', '══ INICIANDO PIPELINE DE DESPLIEGUE ══');
-
-      let lastPct = 0;
-      const stageIndex = [0, 0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6]; // índice del chip activo por mensaje
-
-      for (let i = 0; i < DEPLOY_MESSAGES.length; i++) {
-        const step = DEPLOY_MESSAGES[i];
-
-        // Actualizar barra de progreso gradualmente
-        await animateProgress(bar, pctEl, lastPct, step.pct, 600);
-        lastPct = step.pct;
-
-        stageEl.textContent = step.stage;
-        addLog(step.log, step.msg);
-
-        // Activar chip de etapa correspondiente
-        const activeStage = PIPELINE_STAGES[stageIndex[i]];
-        if (activeStage) {
-          const chip = document.getElementById(`stage-${activeStage.id}`);
-          // Desactivar todos primero
-          PIPELINE_STAGES.forEach(s => {
-            document.getElementById(`stage-${s.id}`).classList.remove('border-cyber-blue', 'text-cyber-blue', 'bg-cyber-blue/10');
-          });
-          chip.classList.add('border-cyber-blue', 'text-cyber-blue', 'bg-cyber-blue/10');
-        }
-
-        await sleep(400 + Math.random() * 600);
-      }
-
-      // Marcar todos los chips como completados
-      PIPELINE_STAGES.forEach(s => {
-        const chip = document.getElementById(`stage-${s.id}`);
-        chip.className = 'px-3 py-1.5 rounded-lg text-xs font-mono border border-cyber-green/50 bg-cyber-green/10 text-cyber-green transition-all duration-500';
-      });
-
-      // Mostrar mensaje de éxito
-      document.getElementById('deploy-hash').textContent = Math.random().toString(36).substring(2, 8);
-      successEl.classList.remove('hidden');
-
-      btn.disabled = false;
-      btn.textContent = '🔄 Nuevo Despliegue';
-      deployRunning = false;
-    }
-
-    /**
-     * Anima la barra de progreso de `from` a `to` en `duration` ms.
-     */
-    function animateProgress(bar, pctEl, from, to, duration) {
-      return new Promise(resolve => {
-        const start = performance.now();
-        function tick(now) {
-          const elapsed = now - start;
-          const progress = Math.min(elapsed / duration, 1);
-          const current = Math.round(from + (to - from) * easeOut(progress));
-          bar.style.width = `${current}%`;
-          pctEl.textContent = `${current}%`;
-          if (progress < 1) requestAnimationFrame(tick);
-          else resolve();
-        }
-        requestAnimationFrame(tick);
-      });
-    }
-
-    /** Función de easing suave */
-    const easeOut = t => 1 - Math.pow(1 - t, 3);
-
-    /** Promesa de espera */
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-
-    /* ───────────────────────────────────────────────
-       CONSOLA DE LOGS INTERACTIVA
-       ─────────────────────────────────────────────── */
-
-    let logsPaused = false;
-    let currentFilter = 'all';
-    let allLogs = []; // historial completo de logs
-
-    // Pool de mensajes de log que se generan automáticamente
-    const AUTO_LOG_POOL = [
-      { type: 'info',    msg: 'Heartbeat: todas las instancias responden correctamente' },
-      { type: 'info',    msg: 'Auto-scaling: uso de CPU al 34% — sin cambios' },
-      { type: 'info',    msg: 'Health check /api/status → 200 OK (12ms)' },
-      { type: 'info',    msg: 'Conexión establecida con db-cluster-primary:5432' },
-      { type: 'info',    msg: 'CDN cache: 98.2% hit rate en los últimos 5 min' },
-      { type: 'warn',    msg: 'Latencia elevada detectada en us-west-2 (>200ms)' },
-      { type: 'warn',    msg: 'Token JWT próximo a expirar — renovando...' },
-      { type: 'warn',    msg: 'Queue de mensajes SQS: 142 mensajes pendientes' },
-      { type: 'info',    msg: 'Backup automático completado: s3://backups/2026-06-24' },
-      { type: 'success', msg: 'Auto-scaling: nueva instancia i-0abc123 iniciada OK' },
-      { type: 'info',    msg: 'SSL/TLS: certificado válido, expira en 87 días' },
-      { type: 'warn',    msg: 'Rate limiting activado para IP 203.45.67.89 (429)' },
-      { type: 'error',   msg: 'Timeout en microservicio payments-svc (3 reintentos)' },
-      { type: 'success', msg: 'Transacciones procesadas: 1,247 en el último minuto' },
-      { type: 'info',    msg: 'Métricas enviadas a CloudWatch — OK' },
-      { type: 'error',   msg: 'Error 503 en /api/recommendations — failover activado' },
-      { type: 'info',    msg: 'Load balancer: distribuyendo tráfico entre 3 nodos' },
-      { type: 'success', msg: 'Deployment rollout completado — 100% tráfico en v2.3.1' },
-    ];
-
-    /** Agrega una entrada al log con marca de tiempo */
-    function addLog(type, message) {
-      const timestamp = new Date().toLocaleTimeString('es-MX', { hour12: false });
-      const entry = { type, message, timestamp, id: Date.now() + Math.random() };
-      allLogs.push(entry);
-
-      // Mantener historial acotado para no crecer indefinidamente
-      if (allLogs.length > 200) allLogs.shift();
-
-      if (!logsPaused) renderLog(entry);
-    }
-
-    /** Renderiza una entrada de log en el DOM */
-    function renderLog(entry) {
-      if (currentFilter !== 'all' && entry.type !== currentFilter) return;
-
-      const output = document.getElementById('log-output');
-      const div = document.createElement('div');
-      div.className = 'log-entry flex gap-3 text-xs';
-      div.dataset.type = entry.type;
-
-      const colors = {
-        info:    'text-gray-400',
-        warn:    'text-yellow-400',
-        error:   'text-red-400',
-        success: 'text-cyber-green',
-      };
-      const badges = {
-        info:    '<span class="text-gray-600 bg-gray-900 px-1 rounded">INFO </span>',
-        warn:    '<span class="text-yellow-400 bg-yellow-400/10 px-1 rounded">WARN </span>',
-        error:   '<span class="text-red-400 bg-red-400/10 px-1 rounded">ERROR</span>',
-        success: '<span class="text-cyber-green bg-cyber-green/10 px-1 rounded">OK   </span>',
-      };
-
-      div.innerHTML = `
-        <span class="text-gray-700 flex-shrink-0">${entry.timestamp}</span>
-        ${badges[entry.type] || badges.info}
-        <span class="${colors[entry.type] || colors.info}">${entry.message}</span>
-      `;
-
-      output.appendChild(div);
-
-      // Auto-scroll al final
-      output.scrollTop = output.scrollHeight;
-
-      // Limitar elementos en DOM a 100 para rendimiento
-      const entries = output.querySelectorAll('.log-entry');
-      if (entries.length > 100) entries[0].remove();
-    }
-
-    /** Limpia todos los logs del DOM */
-    function clearLogs() {
-      allLogs = [];
-      document.getElementById('log-output').innerHTML = '';
-      addLog('info', 'Consola limpiada.');
-    }
-
-    /** Pausa/reanuda el stream de logs */
-    function pauseLogs() {
-      logsPaused = !logsPaused;
-      const btn = document.getElementById('pause-btn');
-      btn.textContent = logsPaused ? 'REANUDAR' : 'PAUSAR';
-      btn.className = logsPaused
-        ? 'text-xs text-cyber-green font-mono hover:text-white transition-colors'
-        : 'text-xs text-gray-600 font-mono hover:text-cyber-green transition-colors';
-
-      if (!logsPaused) {
-        // Mostrar todos los logs acumulados mientras estaba pausado
-        const output = document.getElementById('log-output');
-        output.innerHTML = '';
-        allLogs.slice(-50).forEach(renderLog);
-      }
-    }
-
-    /** Filtra los logs por tipo */
-    function filterLogs(filter) {
-      currentFilter = filter;
-
-      // Actualizar visual de los botones de filtro
-      document.querySelectorAll('.log-filter').forEach(btn => {
-        btn.classList.remove('active-filter', 'text-white');
-        btn.classList.add('text-gray-400');
-      });
-      document.querySelector(`[data-filter="${filter}"]`).classList.add('active-filter', 'text-white');
-
-      // Re-renderizar logs con el filtro activo
-      const output = document.getElementById('log-output');
-      output.innerHTML = '';
-      const filtered = filter === 'all' ? allLogs : allLogs.filter(l => l.type === filter);
-      filtered.slice(-50).forEach(renderLog);
-    }
-
-
-    /* ───────────────────────────────────────────────
-       MÉTRICAS DE SISTEMA (HEADER) — Simuladas
-       ─────────────────────────────────────────────── */
-
-    function updateSystemMetrics() {
-      // Simular variaciones de CPU y memoria realistas
-      const cpuTarget = 15 + Math.random() * 60;
-      const memTarget = 50 + Math.random() * 35;
-
-      const cpuBar = document.getElementById('cpu-bar');
-      const memBar = document.getElementById('mem-bar');
-      const cpuPct = document.getElementById('cpu-pct');
-      const memPct = document.getElementById('mem-pct');
-
-      const curCpu = parseInt(cpuBar.style.width);
-      const curMem = parseInt(memBar.style.width);
-
-      // Interpolación suave
-      const newCpu = Math.round(curCpu + (cpuTarget - curCpu) * 0.2);
-      const newMem = Math.round(curMem + (memTarget - curMem) * 0.1);
-
-      cpuBar.style.width = `${newCpu}%`;
-      cpuPct.textContent = `${newCpu}%`;
-      memBar.style.width = `${newMem}%`;
-      memPct.textContent = `${newMem}%`;
-    }
-
-    /** Actualiza el reloj del header */
-    function updateClock() {
-      document.getElementById('clock').textContent =
-        new Date().toLocaleTimeString('es-MX', { hour12: false });
-    }
-
-
-    /* ───────────────────────────────────────────────
-       PARTÍCULAS FLOTANTES (EFECTO VISUAL HERO)
-       ─────────────────────────────────────────────── */
-
-    function createParticles() {
-      const container = document.getElementById('particles-container');
-      const colors = ['#00d4ff', '#7c3aed', '#00ff88', '#ffffff'];
-
-      for (let i = 0; i < 25; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        const size = 2 + Math.random() * 4;
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const duration = 8 + Math.random() * 15;
-        const dx = (Math.random() - 0.5) * 200;
-
-        p.style.cssText = `
-          width: ${size}px;
-          height: ${size}px;
-          background: ${color};
-          left: ${10 + Math.random() * 80}%;
-          bottom: 0;
-          --dx: ${dx}px;
-          animation-duration: ${duration}s;
-          animation-delay: ${Math.random() * duration}s;
-          opacity: 0;
-          box-shadow: 0 0 ${size * 2}px ${color};
-        `;
-        container.appendChild(p);
-      }
-    }
-
-
-    /* ───────────────────────────────────────────────
-       INICIALIZACIÓN DE LA APLICACIÓN
-       ─────────────────────────────────────────────── */
-
-    document.addEventListener('DOMContentLoaded', () => {
-
-      // 1. Inicializar chips del pipeline
-      initPipelineStages();
-
-      // 2. Crear partículas del hero
-      createParticles();
-
-      // 3. Mensajes de bienvenida en la consola
-      const welcomeLogs = [
-        { type: 'success', msg: 'Sistema cloud inicializado correctamente' },
-        { type: 'info',    msg: 'Conectando a cluster Kubernetes en us-east-1...' },
-        { type: 'success', msg: 'Cluster conectado: 3 nodos activos, 12 pods running' },
-        { type: 'info',    msg: 'Cargando configuración de auto-scaling...' },
-        { type: 'info',    msg: 'Dashboard listo. Bienvenido al Panel Cloud.' },
-      ];
-      welcomeLogs.forEach((log, i) => {
-        setTimeout(() => addLog(log.type, log.msg), i * 400);
-      });
-
-      // 4. Stream de logs automático (simula actividad del servidor)
-      let logIndex = 0;
-      setInterval(() => {
-        const entry = AUTO_LOG_POOL[logIndex % AUTO_LOG_POOL.length];
-        addLog(entry.type, entry.msg);
-        logIndex++;
-      }, 2800);
-
-      // 5. Actualización del reloj y métricas
-      updateClock();
-      setInterval(updateClock, 1000);
-      setInterval(updateSystemMetrics, 3000);
-
-    });
-
-  </script>
 </body>
 </html>
